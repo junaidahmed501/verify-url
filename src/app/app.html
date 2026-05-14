@@ -1,0 +1,72 @@
+@let urlState = linkSchema.url();
+
+<main class="min-h-screen bg-white px-4 py-8 text-[#161616]">
+  <section class="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-center gap-12">
+    <header class="flex items-center justify-between">
+      <p class="text-xl font-bold tracking-tight text-[#161616]">
+        Link Checker
+      </p>
+
+      <span class="rounded-full border border-[#e8e1ef] bg-[#f8f5fb] px-4 py-2 text-sm font-semibold text-[#4b1d73]">
+        Private by design
+      </span>
+    </header>
+
+    <section class="grid items-center gap-12 md:grid-cols-[1.05fr_0.95fr]">
+      <div class="space-y-7">
+        <p class="w-fit rounded-full bg-[#f1e8f8] px-4 py-2 text-sm font-bold text-[#4b1d73]">
+          URL validation
+        </p>
+
+        <h1 class="max-w-2xl text-5xl font-extrabold leading-[1.05] tracking-tight text-[#161616] sm:text-6xl">
+          Check links before you trust them.
+        </h1>
+
+        <p class="max-w-xl text-lg leading-8 text-[#555]">
+          Enter a URL to validate its format and check asynchronously whether it points to a file or folder.
+        </p>
+      </div>
+
+      <form
+        class="rounded-4xl border border-[#eee7f5] bg-[#faf8fc] p-6 shadow-[0_28px_90px_rgba(75,29,115,0.14)]"
+        novalidate
+      >
+        <div class="space-y-5">
+          <div class="space-y-2">
+            <label for="url" class="text-sm font-bold text-[#161616]">
+              URL
+            </label>
+            <input
+              id="url"
+              type="text"
+              inputmode="url"
+              placeholder="https://example.com/folder/"
+              class="w-full rounded-2xl border border-[#ded2ea] bg-white px-4 py-4 text-base text-[#161616] outline-none transition placeholder:text-[#8d8298] focus:border-[#e60046] focus:ring-4 focus:ring-[#e60046]/10"
+              [formField]="linkSchema.url"
+            />
+          </div>
+
+          @if (urlState.dirty()) {
+            @for (error of urlErrors(); track error.kind) {
+              <p class="px-4  text-sm font-semibold text-[#b00034]">
+                {{ error.message }}
+              </p>
+            }
+          }
+
+          @if (urlState.pending()) {
+            <p class="bg-white px-4  text-sm font-semibold text-[#4b1d73]">
+              Checking URL...
+            </p>
+          }
+
+          @for (result of urlCheckResults(); track result.kind) {
+            <p class="bg-[#f0fff4] px-4  text-sm font-bold text-[#15723b]">
+              {{ result.message }}
+            </p>
+          }
+        </div>
+      </form>
+    </section>
+  </section>
+</main>
