@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:github-pages": "ng build --base-href=/verify-url/",
+    "deploy": "ng deploy",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
