@@ -1,72 +1,97 @@
 @let urlState = linkSchema.url();
 
-<main class="min-h-screen bg-white px-4 py-8 text-[#161616]">
-  <section class="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-center gap-12">
-    <header class="flex items-center justify-between">
-      <p class="text-xl font-bold tracking-tight text-[#161616]">
-        Link Checker
+<main class="min-h-screen overflow-hidden bg-[#f7f8f2] px-4 py-5 text-[#18201c] sm:px-6 lg:px-8">
+  <section class="relative mx-auto flex min-h-[calc(100vh-2.5rem)] max-w-7xl flex-col justify-between overflow-hidden border border-[#1d2a23]/15 bg-[#fbfcf7] shadow-[0_24px_80px_rgba(24,32,28,0.14)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(24,32,28,0.06)_1px,transparent_1px),linear-gradient(180deg,rgba(24,32,28,0.06)_1px,transparent_1px)] bg-[size:44px_44px]"></div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-2 bg-[linear-gradient(90deg,#f15a3b_0_24%,#f4c542_24%_45%,#35a37f_45%_72%,#202822_72%_100%)]"></div>
+
+    <header class="relative z-10 flex items-center justify-between border-b border-[#1d2a23]/15 px-5 py-4 sm:px-8">
+      <p class="font-serif text-2xl font-black text-[#18201c]">
+        Link Checker by Tutao (allegedly)
       </p>
 
-      <span class="rounded-full border border-[#e8e1ef] bg-[#f8f5fb] px-4 py-2 text-sm font-semibold text-[#4b1d73]">
-        Private by design
+      <span class="border border-[#1d2a23] bg-[#f4c542] px-3 py-1.5 text-xs font-black uppercase text-[#18201c] shadow-[4px_4px_0_#18201c] sm:px-4">
+        Private by design (trust me bro)
       </span>
     </header>
 
-    <section class="grid items-center gap-12 md:grid-cols-[1.05fr_0.95fr]">
-      <div class="space-y-7">
-        <p class="w-fit rounded-full bg-[#f1e8f8] px-4 py-2 text-sm font-bold text-[#4b1d73]">
-          URL validation
-        </p>
+    <section class="relative z-10 grid flex-1 items-stretch lg:grid-cols-[1fr_1.05fr]">
+      <div class="flex flex-col justify-center gap-8 border-b border-[#1d2a23]/15 px-5 py-10 sm:px-8 sm:py-14 lg:border-b-0 lg:border-r">
+        <div class="max-w-2xl space-y-6">
+          <p class="inline-flex border border-[#1d2a23] bg-[#35a37f] px-3 py-1.5 text-xs font-black uppercase text-white shadow-[4px_4px_0_#18201c]">
+            URL validation, why? because I gotta!
+          </p>
 
-        <h1 class="max-w-2xl text-5xl font-extrabold leading-[1.05] tracking-tight text-[#161616] sm:text-6xl">
-          Check links before you trust them.
-        </h1>
+          <h1 class="max-w-3xl font-serif text-5xl font-black leading-[0.98] text-[#18201c] sm:text-7xl lg:text-8xl">
+            Trace a link like it's no big deal.
+          </h1>
 
-        <p class="max-w-xl text-lg leading-8 text-[#555]">
-          Enter a URL to validate its format and check asynchronously whether it points to a file or folder.
-        </p>
+          <p class="max-w-xl text-base font-medium leading-8 text-[#4f5d55] sm:text-lg">
+            Paste a URL and get a quick read on format, reachability, and whether the destination looks like a file or folder or something else
+          </p>
+        </div>
+
+        <div class="grid max-w-xl grid-cols-3 border border-[#1d2a23]/15 bg-white/70 text-sm font-bold text-[#4f5d55] backdrop-blur">
+          <span class="border-r border-[#1d2a23]/15 px-4 py-3">Format</span>
+          <span class="border-r border-[#1d2a23]/15 px-4 py-3">Reach</span>
+          <span class="px-4 py-3">Type</span>
+        </div>
       </div>
 
-      <form
-        class="rounded-4xl border border-[#eee7f5] bg-[#faf8fc] p-6 shadow-[0_28px_90px_rgba(75,29,115,0.14)]"
-        novalidate
-      >
-        <div class="space-y-5">
-          <div class="space-y-2">
-            <label for="url" class="text-sm font-bold text-[#161616]">
-              URL
-            </label>
-            <input
-              id="url"
-              type="text"
-              inputmode="url"
-              placeholder="https://example.com/folder/"
-              class="w-full rounded-2xl border border-[#ded2ea] bg-white px-4 py-4 text-base text-[#161616] outline-none transition placeholder:text-[#8d8298] focus:border-[#e60046] focus:ring-4 focus:ring-[#e60046]/10"
-              [formField]="linkSchema.url"
-            />
-          </div>
-
-          @if (urlState.dirty()) {
-            @for (error of urlErrors(); track error.kind) {
-              <p class="px-4 text-sm font-semibold text-[#b00034]">
-                {{ error.message }}
+      <div class="flex items-center px-5 py-10 sm:px-8 sm:py-14">
+        <form
+          class="w-full border-2 border-[#18201c] bg-[#fffef8] p-4 shadow-[10px_10px_0_#18201c] sm:p-6 lg:p-8"
+          novalidate
+        >
+          <div class="space-y-6">
+            <div class="flex items-center justify-between border-b-2 border-[#18201c] pb-4">
+              <p class="font-serif text-3xl font-black text-[#18201c]">
+                Inspect
               </p>
-            }
-          }
 
-          @if (urlState.pending()) {
-            <p class="px-4  text-sm font-semibold text-[#4b1d73]">
-              Checking URL...
-            </p>
-          }
+              <span class="bg-[#f15a3b] px-3 py-1 text-xs font-black uppercase text-white">
+                Live
+              </span>
+            </div>
 
-          @for (result of urlCheckResults(); track result.kind) {
-            <p class="px-4  text-sm font-bold text-[#15723b]">
-              {{ result.message }}
-            </p>
-          }
-        </div>
-      </form>
+            <div class="space-y-3">
+              <label for="url" class="text-xs font-black uppercase text-[#18201c]">
+                URL
+              </label>
+              <input
+                id="url"
+                type="text"
+                inputmode="url"
+                placeholder="https://example.com/folder/"
+                class="w-full border-2 border-[#18201c] bg-white px-4 py-4 text-base font-semibold text-[#18201c] outline-none transition placeholder:font-medium placeholder:text-[#7c8981] focus:bg-[#f7fff8] focus:shadow-[6px_6px_0_#35a37f]"
+                [formField]="linkSchema.url"
+              />
+            </div>
+
+            <div class="min-h-16 space-y-3">
+              @if (urlState.dirty()) {
+                @for (error of urlErrors(); track error.kind) {
+                  <p class="border-l-4 border-[#d7292f] bg-[#fff0ec] px-4 py-3 text-sm font-black text-[#9c171c]">
+                    {{ error.message }}
+                  </p>
+                }
+              }
+
+              @if (urlState.pending()) {
+                <p class="border-l-4 border-[#f4c542] bg-[#fff8d8] px-4 py-3 text-sm font-black text-[#6a5200]">
+                  Checking URL...
+                </p>
+              }
+
+              @for (result of urlCheckResults(); track result.kind) {
+                <p class="border-l-4 border-[#35a37f] bg-[#ebfff6] px-4 py-3 text-sm font-black text-[#15694f]">
+                  {{ result.message }}
+                </p>
+              }
+            </div>
+          </div>
+        </form>
+      </div>
     </section>
   </section>
 </main>

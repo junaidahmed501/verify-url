@@ -1,3 +1,58 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+:root {
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+  background: #f7f8f2;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.font-serif {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+}
+
+app-root {
+  display: block;
+}
+
+main > section {
+  animation: page-rise 520ms ease-out both;
+}
+
+form {
+  animation: panel-in 620ms 120ms ease-out both;
+}
+
+::selection {
+  background: #f4c542;
+  color: #18201c;
+}
+
+@keyframes page-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translate(8px, 8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
