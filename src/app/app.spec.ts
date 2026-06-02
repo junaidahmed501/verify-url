@@ -1,18 +1,30 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideZonelessChangeDetection} from '@angular/core';
 import {Mocked, vi} from 'vitest';
+import {of} from 'rxjs';
 import {App} from './app';
 import {VerificationService} from './verification.service';
 
 describe('App', () => {
   let fixture: ComponentFixture<App>;
   let app: App;
+  let verificationService: Mocked<Pick<VerificationService, 'verifyURL'>>;
 
   beforeEach(async () => {
+    verificationService = {
+      verifyURL: vi.fn().mockReturnValue(of({
+        kind: 'urlCheckResult',
+        message: 'URL exists, but the resource type is unknown.',
+      })),
+    };
 
     await TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
+        {
+          provide: VerificationService,
+          useValue: verificationService,
+        },
       ],
     }).compileComponents();
 
@@ -82,6 +94,10 @@ describe('App', () => {
 
   it('should show the async result for an existing file URL', async () => {
     vi.useFakeTimers();
+    verificationService.verifyURL.mockReturnValue(of({
+      kind: 'urlCheckResult',
+      message: 'URL exists and points to a file.',
+    }));
 
     app.linkSchemaFields.set({ url: 'https://example.com/report.pdf' });
 
@@ -89,10 +105,15 @@ describe('App', () => {
 
     expect(errorMessages()).toEqual([]);
     expect(urlCheckResultMessages()).toContain('URL exists and points to a file.');
+    expect(verificationService.verifyURL).toHaveBeenCalledWith('https://example.com/report.pdf');
   });
 
   it('should show the async result for an existing folder URL', async () => {
     vi.useFakeTimers();
+    verificationService.verifyURL.mockReturnValue(of({
+      kind: 'urlCheckResult',
+      message: 'URL exists and points to a folder.',
+    }));
 
     app.linkSchemaFields.set({ url: 'https://example.com/docs/' });
 
@@ -100,10 +121,15 @@ describe('App', () => {
 
     expect(errorMessages()).toEqual([]);
     expect(urlCheckResultMessages()).toContain('URL exists and points to a folder.');
+    expect(verificationService.verifyURL).toHaveBeenCalledWith('https://example.com/docs/');
   });
 
   it('should show the async result for an existing URL with unknown resource type', async () => {
     vi.useFakeTimers();
+    verificationService.verifyURL.mockReturnValue(of({
+      kind: 'urlCheckResult',
+      message: 'URL exists, but the resource type is unknown.',
+    }));
 
     app.linkSchemaFields.set({ url: 'https://example.com/docs' });
 
@@ -111,10 +137,15 @@ describe('App', () => {
 
     expect(errorMessages()).toEqual([]);
     expect(urlCheckResultMessages()).toContain('URL exists, but the resource type is unknown.');
+    expect(verificationService.verifyURL).toHaveBeenCalledWith('https://example.com/docs');
   });
 
   it('should show the async result for a missing URL', async () => {
     vi.useFakeTimers();
+    verificationService.verifyURL.mockReturnValue(of({
+      kind: 'urlCheckResult',
+      message: 'URL does not exist.',
+    }));
 
     app.linkSchemaFields.set({ url: 'https://example.com/missing.pdf' });
 
@@ -122,6 +153,7 @@ describe('App', () => {
 
     expect(errorMessages()).toEqual([]);
     expect(urlCheckResultMessages()).toContain('URL does not exist.');
+    expect(verificationService.verifyURL).toHaveBeenCalledWith('https://example.com/missing.pdf');
   });
 
   async function flushAsyncValidation() {
