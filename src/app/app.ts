@@ -1,21 +1,20 @@
 import {Component, computed, inject, resource, signal, WritableSignal} from '@angular/core';
 import {Link, UrlCheckResult} from './models';
 import {FieldTree, form, FormField, required, validate, validateAsync,} from '@angular/forms/signals';
-import {fromEvent, lastValueFrom, map, switchMap, takeUntil, tap, timer} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {fromEvent, lastValueFrom, map, switchMap, takeUntil, timer} from 'rxjs';
+import {VerificationService} from './verification.service';
 
 
 @Component({
   selector: 'app-root',
   imports: [FormField],
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
 export class App {
   /*
-  Http Client
+  URL service
    */
-  private readonly http = inject(HttpClient);
+  private readonly vService = inject(VerificationService);
   /*
     Signal form schema fields to create the form against
    */
@@ -57,19 +56,8 @@ export class App {
 
             return await lastValueFrom(
               timer(500).pipe(
+                switchMap(() => this.vService.verifyURL(url)),
                 takeUntil(abort$),
-                switchMap(() =>
-                  this.http.get<UrlCheckResult>('https://nodejs-http-server-template.junaidahmed501.workers.dev/api/check-url', {
-                    params: {url},
-                  }),
-                ),
-                takeUntil(abort$),
-                map((response): UrlCheckResult => {
-                  return {
-                    kind: response?.kind,
-                    message: response?.message,
-                  } satisfies UrlCheckResult;
-                }),
               ),
             );
           }

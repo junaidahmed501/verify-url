@@ -1,19 +1,18 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {provideZonelessChangeDetection} from '@angular/core';
-import {vi} from 'vitest';
+import {Mocked, vi} from 'vitest';
 import {App} from './app';
-import {mockUrlCheckInterceptor} from './interceptors/mock-backend.interceptor';
+import {VerificationService} from './verification.service';
 
 describe('App', () => {
   let fixture: ComponentFixture<App>;
   let app: App;
 
   beforeEach(async () => {
+
     await TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
-        provideHttpClient(withInterceptors([mockUrlCheckInterceptor])),
       ],
     }).compileComponents();
 
