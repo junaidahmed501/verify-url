@@ -1,7 +1,7 @@
 import {Component, computed, inject, resource, signal, WritableSignal} from '@angular/core';
 import {Link, UrlCheckResult} from './models';
 import {FieldTree, form, FormField, required, validate, validateAsync,} from '@angular/forms/signals';
-import {fromEvent, lastValueFrom, map, switchMap, takeUntil, timer} from 'rxjs';
+import {fromEvent, lastValueFrom, switchMap, takeUntil, timer} from 'rxjs';
 import {VerificationService} from './verification.service';
 
 
@@ -64,15 +64,14 @@ export class App {
         });
       },
       onSuccess: (response: UrlCheckResult) => {
-        return {
-          kind: 'urlCheckResult',
-          message: response.message,
-        };
+        return response;
       },
-      onError: () => {
+      onError: (error: unknown) => {
         return {
-          kind: 'badRequest',
-          message: 'Could not verify URL',
+          kind: 'urlVerificationError',
+          message: error instanceof Error
+            ? error.message
+            : "Something bad happened, don't look at me",
         };
       },
     });

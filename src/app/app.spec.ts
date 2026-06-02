@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideZonelessChangeDetection} from '@angular/core';
 import {Mocked, vi} from 'vitest';
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 import {App} from './app';
 import {VerificationService} from './verification.service';
 
@@ -154,6 +154,23 @@ describe('App', () => {
     expect(errorMessages()).toEqual([]);
     expect(urlCheckResultMessages()).toContain('URL does not exist.');
     expect(verificationService.verifyURL).toHaveBeenCalledWith('https://example.com/missing.pdf');
+  });
+
+  it('should show the async verification error from the service', async () => {
+    vi.useFakeTimers();
+    verificationService.verifyURL.mockReturnValue(throwError(() => new Error('Could not verify URL')));
+
+    app.linkSchemaFields.set({ url: 'https://example.com/report.pdf' });
+
+    await flushAsyncValidation();
+
+    expect(app.urlErrors()).toContainEqual(expect.objectContaining({
+      kind: 'urlVerificationError',
+      message: 'Could not verify URL',
+    }));
+    expect(errorMessages()).toContain('Could not verify URL');
+    expect(urlCheckResultMessages()).toEqual([]);
+    expect(verificationService.verifyURL).toHaveBeenCalledWith('https://example.com/report.pdf');
   });
 
   async function flushAsyncValidation() {
